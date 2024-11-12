@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Current Time, Stopwatch & Alarm</title>
+<style>
+html,body {
+height: 100%; 
+margin: 0;
+font-family: Arial, sans-serif;
+background-color: #e9ecef; 
+display: flex;
+justify-content: center;
+align-items: center;
+}
+
+.container {
+text-align: center;
+padding: 5%; 
+width: 95%; 
+max-width: 600px; 
+border: 1px solid #ced4da;
+border-radius: 10px;
+background-color: #ffffff;
+box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.time-display, .alarm-set, .stopwatch {
+font-size: 2em; 
+color: #495057; 
+margin: 3% 0;
+}
+
+.buttons {
+margin-top: 3%;
+}
+
+.button {
+padding: 4px 5px; 
+margin: 0 4px;
+font-size: 1.2em; 
+cursor: pointer;
+border: none;
+border-radius: 5px;
+color: #ffffff;
+transition: background-color 0.3s ease;
+}
+
+.button.start {
+background-color: #007bff; 
+}
+
+.button.start:hover {
+background-color: #0056b3; 
+}
+
+.button.stop {
+background-color: #dc3545; 
+}
+
+.button.stop:hover {
+background-color: #c82333; 
+}
+
+.button.reset {
+background-color: #6c757d; 
+}
+
+.button.reset:hover {
+background-color: #5a6268; 
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<div class="time-display" id="currentTime">Loading current time</div>
+
+
+<div class="alarm-set">
+    <label for="alarmTime">Set Alarm (HH:MM:SS): </label>
+    <input type="time" id="alarmTime">
+    <button class="button set-alarm" onclick="setAlarm()">Set Alarm</button>
+</div>
+
+<div class="stopwatch" id="stopwatch">00:00:00</div>
+
+<div class="buttons">
+    <button class="button start" onclick="startStopwatch()">Start</button>
+    <button class="button stop" onclick="stopStopwatch()">Stop</button>
+    <button class="button reset" onclick="resetStopwatch()">Reset</button>
+</div>
+</div>
+
+<script>
+let alarmTime = null;
+let alarmTimeout = null;
+
+function showCurrentTime() {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString();
+    document.getElementById('currentTime').textContent = timeString;
+
+    
+    if (alarmTime && timeString === alarmTime) {
+    alert("Alarm! Time's up!");
+    alarmTime = null;
+    }
+}
+
+setInterval(showCurrentTime, 1000);
+
+function setAlarm() {
+    const alarmInput = document.getElementById('alarmTime').value;
+    if (alarmInput) {
+    alarmTime = alarmInput + ":00"; 
+    alert("Alarm set for " + alarmTime);
+    } else {
+    alert("Please enter a valid time for the alarm.");
+    }
+}
+
+let stopwatchInterval;
+let elapsedSeconds = 0;
+
+function startStopwatch() {
+    if (!stopwatchInterval) {
+    stopwatchInterval = setInterval(updateStopwatch, 1000);
+    }
+}
+
+function stopStopwatch() {
+    clearInterval(stopwatchInterval);
+    stopwatchInterval = null;
+}
+
+    function resetStopwatch() {
+    stopStopwatch();
+    elapsedSeconds = 0;
+    document.getElementById('stopwatch').textContent = "00:00:00";
+}
+
+function updateStopwatch() {
+    elapsedSeconds++;
+    const hours = String(Math.floor(elapsedSeconds / 3600)).padStart(2, '0');
+    const minutes = String(Math.floor((elapsedSeconds % 3600) / 60)).padStart(2, '0');
+    const seconds = String(elapsedSeconds % 60).padStart(2, '0');
+    document.getElementById('stopwatch').textContent = `${hours}:${minutes}:${seconds}`;
+}
+</script>
+
+</body>
+</html>
